@@ -1,3 +1,10 @@
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  document.documentElement.classList.toggle('light-mode');
+  themeToggle.textContent = document.documentElement.classList.contains('light-mode') ? '◐' : '◑';
+});
+
 const greetings = [
   '¡Hola!',
   '¡Buenas!',
@@ -19,7 +26,7 @@ document.getElementById('greeting').textContent = randomGreeting;
 
 // Randomizar orden de proyectos
 const projectsSection = document.querySelector('.projects-section');
-const allProjects = Array.from(document.querySelectorAll('.project'));
+const allProjects = Array.from(document.querySelectorAll('.project')).filter(p => p.style.display !== 'none');
 const dividers = Array.from(document.querySelectorAll('.project-divider'));
 
 // Crear array de proyectos con sus dividers
@@ -32,6 +39,15 @@ const projectsWithDividers = allProjects.map((project, index) => ({
 for (let i = projectsWithDividers.length - 1; i > 0; i--) {
   const j = Math.floor(Math.random() * (i + 1));
   [projectsWithDividers[i], projectsWithDividers[j]] = [projectsWithDividers[j], projectsWithDividers[i]];
+}
+
+// El primer proyecto nunca puede ser de Spotify
+const isSpotify = (item) => !!item.project.querySelector('.project-client.spotify');
+if (isSpotify(projectsWithDividers[0])) {
+  const firstNonSpotify = projectsWithDividers.findIndex((item, i) => i > 0 && !isSpotify(item));
+  if (firstNonSpotify !== -1) {
+    [projectsWithDividers[0], projectsWithDividers[firstNonSpotify]] = [projectsWithDividers[firstNonSpotify], projectsWithDividers[0]];
+  }
 }
 
 // Limpiar la sección de proyectos

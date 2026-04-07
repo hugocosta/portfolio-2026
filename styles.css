@@ -3,13 +3,13 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #f6f5f2;
-  --bg-card: #edecea;
-  --text-dark: #2a2a2a;
-  --text-mid: #5a5a5a;
-  --text-light: #8a8a8a;
+  --bg: #000000;
+  --bg-card: #111111;
+  --text-dark: #f0eeea;
+  --text-mid: #a0a0a0;
+  --text-light: #666666;
   --accent: #b8a089;
-  --border: #ddd9d3;
+  --border: #2a2a2a;
   --margin-left: 120px;
   --color-spotify: #1DB954;
   --color-1906: #8B3A3A;
@@ -40,6 +40,15 @@ a, button, .scroll-card.image-card, .scroll-card.wide-image-card, .scroll-card.v
   position: relative;
 }
 
+html.light-mode {
+  --bg: #f6f5f2;
+  --bg-card: #edecea;
+  --text-dark: #2a2a2a;
+  --text-mid: #5a5a5a;
+  --text-light: #8a8a8a;
+  --border: #ddd9d3;
+}
+
 body {
   font-family: 'IBM Plex Mono', monospace;
   background-color: var(--bg);
@@ -47,6 +56,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  transition: background-color 0.35s ease, color 0.35s ease;
 }
 
 ::selection { background: var(--accent); color: white; }
@@ -61,6 +71,8 @@ nav .logo { font-size: 13px; font-weight: 400; letter-spacing: 0.1em; text-trans
 nav .nav-links { display: flex; gap: 32px; list-style: none; }
 nav .nav-links a { font-size: 11px; font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase; color: white; text-decoration: none; transition: opacity 0.3s; }
 nav .nav-links a:hover { opacity: 0.5; }
+.theme-toggle { background: none; border: none; padding: 0; font-family: inherit; font-size: 14px; color: white; cursor: inherit; opacity: 0.7; transition: opacity 0.3s; }
+.theme-toggle:hover { opacity: 1; }
 
 .hero {
   min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
