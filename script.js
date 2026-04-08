@@ -1,21 +1,23 @@
 // Theme toggle
 const themeToggle = document.getElementById('themeToggle');
+
+if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+  document.documentElement.classList.add('light-mode');
+  themeToggle.textContent = '◐';
+}
+
 themeToggle.addEventListener('click', () => {
   document.documentElement.classList.toggle('light-mode');
   themeToggle.textContent = document.documentElement.classList.contains('light-mode') ? '◐' : '◑';
 });
 
 const greetings = [
-  '¡Hola!',
-  '¡Buenas!',
-  '¡Hey!',
-  '¿Qué pasa?',
-  '¿Qué tal?',
-  '¡Tú por aquí otra vez!',
-  '¡Ey, tú!',
-  '¿Ey, qué?',
-  '¡Bienvenido!',
-  '¡Bienvenida!',
+  '¡hola!',
+  '¡buenas!',
+  '¡hey!',
+  '¿qué pasa?',
+  '¡bienvenido!',
+  '¡bienvenida!',
   '👋',
   '👍',
   '🤘',
@@ -158,22 +160,38 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
 
-// Scroll controls
+// Scroll dots
 document.querySelectorAll('.project').forEach(project => {
   const container = project.querySelector('[data-scroll-container]');
-  const btnPrev = project.querySelector('.scroll-btn-prev');
-  const btnNext = project.querySelector('.scroll-btn-next');
-  if (!container || !btnPrev || !btnNext) return;
+  const dotsContainer = project.querySelector('.scroll-dots');
+  if (!container || !dotsContainer) return;
 
-  const scrollAmount = 560;
+  const cards = Array.from(container.querySelectorAll('.scroll-card'));
+  if (cards.length === 0) return;
 
-  btnPrev.addEventListener('click', () => container.scrollBy({ left: -scrollAmount, behavior: 'smooth' }));
-  btnNext.addEventListener('click', () => container.scrollBy({ left: scrollAmount, behavior: 'smooth' }));
+  cards.forEach((card, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'scroll-dot' + (i === 0 ? ' active' : '');
+    dotsContainer.appendChild(dot);
+  });
+
+  const dots = dotsContainer.querySelectorAll('.scroll-dot');
+
+  container.addEventListener('scroll', () => {
+    const containerLeft = container.getBoundingClientRect().left;
+    let closestIndex = 0;
+    let closestDist = Infinity;
+    cards.forEach((card, i) => {
+      const dist = Math.abs(card.getBoundingClientRect().left - containerLeft);
+      if (dist < closestDist) { closestDist = dist; closestIndex = i; }
+    });
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === closestIndex));
+  }, { passive: true });
 });
 
 // Cursor tooltip
 const cursorTooltip = document.getElementById('cursor-tooltip');
-const tooltipTargets = document.querySelectorAll('.scroll-card.image-card, .scroll-card.wide-image-card, .scroll-card.video-card');
+const tooltipTargets = document.querySelectorAll('.scroll-card.image-card, .scroll-card.wide-image-card, .scroll-card.video-card, .scroll-card.portrait-image-card');
 
 tooltipTargets.forEach(card => {
   card.addEventListener('mouseenter', () => {
@@ -188,6 +206,23 @@ document.addEventListener('mousemove', (e) => {
   cursorTooltip.style.left = e.clientX + 'px';
   cursorTooltip.style.top = e.clientY + 'px';
 });
+
+// Logo pixel animation
+const logoRects = Array.from(document.querySelectorAll('.logo svg rect'));
+if (logoRects.length > 0) {
+  const offsets = new Map(logoRects.map(r => [r, { x: 0, y: 0 }]));
+  setInterval(() => {
+    for (let i = 0; i < 4; i++) {
+      const rect = logoRects[Math.floor(Math.random() * logoRects.length)];
+      const off = offsets.get(rect);
+      const step = () => [-2, -1, 0, 1, 2][Math.floor(Math.random() * 5)];
+      const newX = Math.max(-4, Math.min(4, off.x + step()));
+      const newY = Math.max(-4, Math.min(4, off.y + step()));
+      offsets.set(rect, { x: newX, y: newY });
+      rect.style.transform = `translate(${newX}px, ${newY}px)`;
+    }
+  }, 600);
+}
 
 const heroGreeting = document.querySelector('.hero-greeting');
 let ticking = false;
